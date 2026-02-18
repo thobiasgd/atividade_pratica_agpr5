@@ -1,0 +1,138 @@
+@baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
+
+# @name create_account
+POST {{baseUrl}}/users
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Thobias Gonçalves Dordete",
+  "cpf": "111.111.111.11",
+  "password": "111111",
+  "type": "ADMIN"
+}
+
+###
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "cpf": "888.888.888.88",
+  "password": "111111"
+}
+
+###
+
+# @name create_recipient
+POST {{baseUrl}}/recipients
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Fulano 5",
+  "cpf": "555.555.555.55"
+}
+
+###
+
+# @name register_recipient_address
+POST {{baseUrl}}/recipients/bf04f25e-e62c-4124-896b-38d2a6c8a0d8/addresses
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "country": "Brasil",
+  "state": "Santa Catarina",
+  "city": "Ararangua",
+  "neighborhood": "Mato Alto",
+  "street": "Amaro José Pereira",
+  "number": 222
+}
+
+###
+
+# @name create_order
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "description": "Controle",
+  "recipientId": "bf04f25e-e62c-4124-896b-38d2a6c8a0d8",
+  "addressId": "38a4a50e-c20d-4995-81dd-5c213d1fa4e3"
+}
+
+###
+
+# @name read_notification
+PATCH {{baseUrl}}/notifications/33ac0b08-6068-4a41-9b83-fe69391b9310/read
+Content-Type: application/json
+
+{
+  "userCpf": "121.111.111.10"
+}
+
+###
+
+# @name asign_order_to_carrier
+PATCH {{baseUrl}}/orders/ba1ac141-e1ee-45ee-8770-6078bb563710/asign-carrier
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name return_package
+PATCH {{baseUrl}}/orders/eae70bf5-22b6-4ef4-80a5-1c90d3d9c36a/return
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name fetch_near_orders
+GET {{baseUrl}}/nearOrders?neighborhood=Coloninha
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name alter_user_password
+PATCH {{baseUrl}}/users/5d9319b7-d56e-4b35-9735-56605e88eb9b/alter-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "newUserPassword": "999"
+}
+
+###
+
+# @name fetch_user_orders
+GET {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name deliver_package
+PATCH {{baseUrl}}/orders/cfccb747-212b-467c-aff1-b926b3db6770/deliver
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=BOUNDARY
+
+--BOUNDARY
+Content-Disposition: form-data; name="orderId"
+
+cfccb747-212b-467c-aff1-b926b3db6770
+--BOUNDARY
+Content-Disposition: form-data; name="deliveredAt"
+
+2026-02-18T10:30:00Z
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="package.png"
+Content-Type: image/png
+
+< ./package.png
+--BOUNDARY--
+
