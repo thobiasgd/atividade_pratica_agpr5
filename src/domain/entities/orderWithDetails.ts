@@ -40,8 +40,6 @@ export class OrderWithDetails extends AggregateRoot<OrderWithDetailsProps> {
   static create(props: OrderWithDetailsProps, id?: UniqueEntityID) {
     const order = new OrderWithDetails(props, id);
 
-    //order.addDomainEvent(new OrderCreatedEvent(order));
-
     return order;
   }
 }

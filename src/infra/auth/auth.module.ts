@@ -14,11 +14,15 @@ import { RolesGuard } from './roles.guard';
       inject: [EnvService],
       global: true,
       useFactory(env: EnvService) {
+        // <- erro aqui no useFactory
         const privateKey = env.get('JWT_PRIVATE_KEY');
         const publicKey = env.get('JWT_PUBLIC_KEY');
 
         return {
-          signOptions: { algorithm: 'RS256' },
+          signOptions: {
+            algorithm: 'RS256',
+            expiresIn: env.get('JWT_EXPIRES_IN'),
+          },
           privateKey: Buffer.from(privateKey, 'base64'),
           publicKey: Buffer.from(publicKey, 'base64'),
         };
