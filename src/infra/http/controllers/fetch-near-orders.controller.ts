@@ -29,6 +29,6 @@ export class FetchNearOrdersController {
 
     const orders = result.value.orders;
 
-    return { orders: orders.map(OrderPresenter.toHTTP) };
+    return orders.map(OrderPresenter.toHTTP);
   }
 }

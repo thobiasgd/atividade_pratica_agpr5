@@ -15,8 +15,16 @@ export class User extends Entity<UserProps> {
     return this.props.name;
   }
 
+  set name(name: string) {
+    this.props.name = name;
+  }
+
   get cpf() {
     return this.props.cpf;
+  }
+
+  set cpf(cpf: string) {
+    this.props.cpf = cpf;
   }
 
   get password() {

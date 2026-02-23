@@ -7,10 +7,10 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Thobias Gonçalves Dordete",
-  "cpf": "111.111.111.11",
+  "name": "David Leonardeli",
+  "cpf": "777.777.777.77",
   "password": "111111",
-  "type": "ADMIN"
+  "type": "EMPLOYEE"
 }
 
 ###
@@ -20,7 +20,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "cpf": "888.888.888.88",
+  "cpf": "123.456.789.10",
   "password": "111111"
 }
 
@@ -78,7 +78,7 @@ Content-Type: application/json
 ###
 
 # @name asign_order_to_carrier
-PATCH {{baseUrl}}/orders/ba1ac141-e1ee-45ee-8770-6078bb563710/asign-carrier
+PATCH {{baseUrl}}/orders/1eada74e-6e53-477c-b1d2-d442c6d09c64/asign-carrier
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -116,6 +116,53 @@ Authorization: Bearer {{authToken}}
 
 ### 
 
+# @name fetch_single_user
+GET {{baseUrl}}/users/31dae27b-7711-41c2-955e-e31e1d8e1811
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name fetch_single_order
+GET {{baseUrl}}/orders/1eada74e-6e53-477c-b1d2-d442c6d09c64
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name delete_user
+DELETE {{baseUrl}}/users/c71cf61b-4734-4f97-b4b6-681fb14940bd
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name fetch_list_user
+GET {{baseUrl}}/list-of-orders?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name fetch_list_orders
+GET {{baseUrl}}/orders?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name edit_user
+PUT {{baseUrl}}/users/edit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "newUserCpf": "123.456.789.10",
+  "newUserName": "Thobias de Souza Maciel"
+}
+
+### 
+
 # @name deliver_package
 PATCH {{baseUrl}}/orders/cfccb747-212b-467c-aff1-b926b3db6770/deliver
 Authorization: Bearer {{authToken}}
@@ -136,3 +183,53 @@ Content-Type: image/png
 < ./package.png
 --BOUNDARY--
 
+###
+
+# @name list_of_orders
+GET {{baseUrl}}/list-of-orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name edit_order
+PUT {{baseUrl}}/orders/cfccb747-212b-467c-aff1-b926b3db6770/edit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "newOrderDescription": "Tijolos amarelos"
+}
+
+### 
+
+# @name delete_order
+DELETE {{baseUrl}}/orders/cfccb747-212b-467c-aff1-b926b3db6770
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name list_of_recipients
+GET {{baseUrl}}/list-of-recipients
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name edit_recipient
+PUT {{baseUrl}}/recipients/de54955f-f063-46e0-b1e3-62d2c6882115/edit
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "newRecipientCpf": "987.654.321.00",
+  "newRecipientName": "Dominus"
+}
+
+### 
+
+# @name delete_recipient
+DELETE {{baseUrl}}/recipients/de54955f-f063-46e0-b1e3-62d2c6882115
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

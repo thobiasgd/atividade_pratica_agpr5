@@ -20,6 +20,10 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.description;
   }
 
+  set description(newDescription: string) {
+    this.props.description = newDescription;
+  }
+
   get status() {
     return this.props.status;
   }

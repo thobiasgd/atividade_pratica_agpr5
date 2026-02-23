@@ -4,10 +4,33 @@ import { Order, OrderStatus } from '@/domain/entities/order';
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper';
 import { OrderRepository } from '@/domain/repositories/order-repository';
 import { DomainEvents } from '@/core/events/domain-events';
+import { OrderWithDetails } from '@/domain/entities/orderWithDetails';
 
 @Injectable()
 export class PrismaOrderRepository implements OrderRepository {
   constructor(private prisma: PrismaService) {}
+
+  async fetchListOfOrders(page: number): Promise<OrderWithDetails[]> {
+    const orders = await this.prisma.order.findMany({
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        address: {
+          select: {
+            country: true,
+            state: true,
+            city: true,
+            neighborhood: true,
+            street: true,
+          },
+        },
+        recipient: true,
+        carrier: true,
+      },
+    });
+
+    return orders.map(PrismaOrderMapper.toDomainWithDetails);
+  }
 
   async listNearOrders(neighborhood: string): Promise<Order[]> {
     const orders = await this.prisma.order.findMany({
@@ -32,7 +55,6 @@ export class PrismaOrderRepository implements OrderRepository {
       return null;
     }
 
-    //console.log(PrismaOrderMapper.toDomain(order));
     return PrismaOrderMapper.toDomain(order);
   }
 
@@ -74,5 +96,28 @@ export class PrismaOrderRepository implements OrderRepository {
 
     console.log('[OrderRepository] Disparando DomainEvents');
     DomainEvents.dispatchEventsForAggregate(order.id);
+  }
+
+  async save(order: Order): Promise<void> {
+    const data = PrismaOrderMapper.toPrisma(order);
+
+    await Promise.all([
+      this.prisma.order.update({
+        where: {
+          id: order.id.toString(),
+        },
+        data,
+      }),
+    ]);
+  }
+
+  async delete(order: Order): Promise<void> {
+    const data = PrismaOrderMapper.toPrisma(order);
+
+    await this.prisma.order.delete({
+      where: {
+        id: data.id,
+      },
+    });
   }
 }

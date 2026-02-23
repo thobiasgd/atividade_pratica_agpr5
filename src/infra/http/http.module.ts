@@ -32,6 +32,28 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/use-cases/upload-and-
 import { StorageModule } from '../storage/storage.module';
 import { ReadNotificationController } from './controllers/read-notification.controller';
 import { ReadNotificationUseCase } from '@/domain/notification/application/use-cases/read-notification';
+import { FetchSingleUserController } from './controllers/fetch-single-user.controller';
+import { FetchSingleUserUseCase } from '@/domain/use-cases/fetch-single-user';
+import { fetchListOfUsersController } from './controllers/fetch-list-of-users.controller';
+import { fetchListOfUsersUseCase } from '@/domain/use-cases/fetch-list-of-users';
+import { EditUserController } from './controllers/edit-user.controller';
+import { DeleteUserController } from './controllers/delete-user.controller';
+import { DeleteUserUseCase } from '@/domain/use-cases/delete-user';
+import { FetchSingleOrderController } from './controllers/fetch-single-order.controller';
+import { FetchSingleOrderUseCase } from '@/domain/use-cases/fetch-single-order';
+import { fetchListOfOrdersController } from './controllers/fetch-list-of-orders.controller';
+import { fetchListOfOrdersUseCase } from '@/domain/use-cases/fetch-list-of-orders';
+import { EditOrderController } from './controllers/edit-order.controller';
+import { EditOrderUseCase } from '@/domain/use-cases/edit-order';
+import { EditUserUseCase } from '@/domain/use-cases/edit-user';
+import { DeleteOrderController } from './controllers/delete-order.controller';
+import { DeleteOrderUseCase } from '@/domain/use-cases/delete-order';
+import { fetchListOfRecipientsController } from './controllers/fetch-list-of-recipients.controller';
+import { fetchListOfRecipientsUseCase } from '@/domain/use-cases/fetch-list-of-recipients';
+import { EditRecipientController } from './controllers/edit-recipient.controller';
+import { EditRecipientUseCase } from '@/domain/use-cases/edit-recipient';
+import { DeleteRecipientController } from './controllers/delete-recipient.controller';
+import { DeleteRecipientUseCase } from '@/domain/use-cases/delete-recipient';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -51,6 +73,17 @@ import { ReadNotificationUseCase } from '@/domain/notification/application/use-c
     FetchUserOrdersController,
     UploadAttachmentController,
     ReadNotificationController,
+    FetchSingleUserController,
+    fetchListOfUsersController,
+    EditUserController,
+    DeleteUserController,
+    FetchSingleOrderController,
+    fetchListOfOrdersController,
+    EditOrderController,
+    DeleteOrderController,
+    fetchListOfRecipientsController,
+    EditRecipientController,
+    DeleteRecipientController,
   ],
   providers: [
     RegisterUserUseCase,
@@ -68,6 +101,17 @@ import { ReadNotificationUseCase } from '@/domain/notification/application/use-c
     FetchUserOrdersUseCase,
     UploadAndCreateAttachmentUseCase,
     ReadNotificationUseCase,
+    FetchSingleUserUseCase,
+    fetchListOfUsersUseCase,
+    EditUserUseCase,
+    DeleteUserUseCase,
+    FetchSingleOrderUseCase,
+    fetchListOfOrdersUseCase,
+    EditOrderUseCase,
+    DeleteOrderUseCase,
+    fetchListOfRecipientsUseCase,
+    EditRecipientUseCase,
+    DeleteRecipientUseCase,
   ],
 })
 export class HttpModule {}
