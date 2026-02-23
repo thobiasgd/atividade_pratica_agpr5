@@ -154,16 +154,6 @@ http://localhost:3333
 
 ---
 
-# 📡 API Reference
-
-Base URL:
-
-```
-http://localhost:3333
-```
-
----
-
 # 🔐 Autenticação
 
 ---
