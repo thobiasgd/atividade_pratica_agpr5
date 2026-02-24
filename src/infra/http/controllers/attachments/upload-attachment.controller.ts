@@ -11,7 +11,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Attachments')
+@ApiBearerAuth()
 @Controller('/attachments')
 export class UploadAttachmentController {
   constructor(
@@ -19,6 +22,10 @@ export class UploadAttachmentController {
   ) {}
 
   @Post()
+  @ApiOperation({
+    summary:
+      'Rota para upload de anexos para confirmação de entrega das encomendas',
+  })
   @UseInterceptors(FileInterceptor('file'))
   async handle(
     @UploadedFile(

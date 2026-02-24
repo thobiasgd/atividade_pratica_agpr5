@@ -6,7 +6,6 @@ import { Injectable } from '@nestjs/common';
 import { Notification } from '../../entities/notification';
 
 interface ReadNotificationUseCaseRequest {
-  recipientCpf: string;
   notificationId: string;
 }
 
@@ -22,7 +21,6 @@ export class ReadNotificationUseCase {
   constructor(private notificationsRepository: NotificationsRepository) {}
 
   async execute({
-    recipientCpf,
     notificationId,
   }: ReadNotificationUseCaseRequest): Promise<ReadNotificationUseCaseResponse> {
     const notification =
@@ -31,11 +29,6 @@ export class ReadNotificationUseCase {
     if (!notification) {
       return left(new ResourceNotFoundError());
     }
-
-    /* if (recipientCpf !== notification.recipientId.toString()) {
-      return left(new NotAllowedError());
-    } */
-
     notification.read();
 
     await this.notificationsRepository.save(notification);

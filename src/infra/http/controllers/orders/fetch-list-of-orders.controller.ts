@@ -4,6 +4,12 @@ import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import z from 'zod';
 import { Roles } from '@/infra/auth/roles';
 import { OrderWithDetailsPresenter } from '../../presenters/order-with-details-presenter';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 const pageQueryParamSchema = z
   .string()
@@ -16,11 +22,21 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema);
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>;
 
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('/list-of-orders')
 export class fetchListOfOrdersController {
   constructor(private fetchOrders: fetchListOfOrdersUseCase) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Rota para listagem de todas as encomendas.',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Número da página de busca (20 por busca)',
+  })
   @Roles('ADMIN')
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.fetchOrders.execute({

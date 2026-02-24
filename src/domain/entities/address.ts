@@ -1,48 +1,72 @@
-import { Entity } from "@/core/entities/entity"
-import { UniqueEntityID } from "@/core/entities/unique-entity-id"
+import { Entity } from '@/core/entities/entity';
+import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 
 export interface AddressProps {
-    country:      string 
-    state:        string
-    city:         string
-    neighborhood: string
-    street:       string
-    number:       number
-    recipientId:  UniqueEntityID
+  country: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  street: string;
+  number: number;
+  recipientId: UniqueEntityID;
 }
 
 export class Address extends Entity<AddressProps> {
-    get country() {
-        return this.props.country
-    }
+  get country() {
+    return this.props.country;
+  }
 
-    get state() {
-        return this.props.state
-    }
+  set country(newCountry: string) {
+    this.props.country = newCountry;
+  }
 
-    get city() {
-        return this.props.city
-    }
+  get state() {
+    return this.props.state;
+  }
 
-    get neighborhood() {
-        return this.props.neighborhood
-    }
+  set state(newState: string) {
+    this.props.state = newState;
+  }
 
-    get street() {
-        return this.props.street
-    }
+  get city() {
+    return this.props.city;
+  }
 
-    get number() {
-        return this.props.number
-    }
+  set city(newCity: string) {
+    this.props.city = newCity;
+  }
 
-    get recipientId() {
-        return this.props.recipientId
-    }
+  get neighborhood() {
+    return this.props.neighborhood;
+  }
 
-    static create(props: AddressProps, id?: UniqueEntityID){
-        const address = new Address(props, id)
+  set neighborhood(newNeighborhood: string) {
+    this.props.neighborhood = newNeighborhood;
+  }
 
-        return address
-    }
+  get street() {
+    return this.props.street;
+  }
+
+  set street(newStreet: string) {
+    this.props.street = newStreet;
+  }
+
+  get number() {
+    return this.props.number;
+  }
+
+  set number(newNumber: number) {
+    this.props.number = newNumber;
+  }
+
+  get recipientId() {
+    return this.props.recipientId;
+  }
+
+  static create(props: AddressProps, id?: UniqueEntityID) {
+    const address = new Address(props, id);
+
+    return address;
+  }
 }

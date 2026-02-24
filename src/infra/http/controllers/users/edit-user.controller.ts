@@ -8,28 +8,24 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
-import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe';
-import { z } from 'zod';
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error';
 import { EditUserUseCase } from '@/domain/use-cases/users/edit-user';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { bodyValidationPipe, EditUserDTO } from './dto/edit-user.dto';
 
-const editUserBodySchema = z.object({
-  newUserCpf: z.string(),
-  newUserName: z.string(),
-});
-
-const bodyValidationPipe = new ZodValidationPipe(editUserBodySchema);
-
-type EditUserBodySchema = z.infer<typeof editUserBodySchema>;
-
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('/users/edit')
 export class EditUserController {
   constructor(private editUser: EditUserUseCase) {}
 
   @Put()
+  @ApiOperation({
+    summary: 'Rota para edição de usuários existentes.',
+  })
   @HttpCode(204)
   async handle(
-    @Body(bodyValidationPipe) body: EditUserBodySchema,
+    @Body(bodyValidationPipe) body: EditUserDTO,
     @CurrentUser() user: UserPayload,
     @Param('id') userId: string,
   ) {
@@ -41,7 +37,6 @@ export class EditUserController {
     }
 
     const result = await this.editUser.execute({
-      //userIdBearer,
       newUserCpf,
       newUserName,
     });

@@ -1,6 +1,17 @@
 @baseUrl = http://localhost:3333
 @authToken = {{authenticate.response.body.access_token}}
 
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+  "cpf": "777.777.777.77",
+  "password": "111111"
+}
+
+###
+
 # @name create_account
 POST {{baseUrl}}/users
 Content-Type: application/json
@@ -11,17 +22,6 @@ Authorization: Bearer {{authToken}}
   "cpf": "777.777.777.77.11111",
   "password": "111111",
   "type": "EMPLOYEE"
-}
-
-###
-
-# @name authenticate
-POST {{baseUrl}}/sessions
-Content-Type: application/json
-
-{
-  "cpf": "123.456.789.10",
-  "password": "111111"
 }
 
 ###
@@ -146,6 +146,13 @@ Authorization: Bearer {{authToken}}
 
 # @name fetch_list_orders
 GET {{baseUrl}}/orders?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### 
+
+# @name fetch_recipient_addresses
+GET {{baseUrl}}/addresses/bf04f25e-e62c-4124-896b-38d2a6c8a0d8
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

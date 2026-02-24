@@ -3,12 +3,18 @@ import { OrderPresenter } from '../../presenters/order-presenter';
 import { FetchUserOrdersUseCase } from '@/domain/use-cases/orders/fetch-user-orders';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('/orders')
 export class FetchUserOrdersController {
   constructor(private fetchUserOrders: FetchUserOrdersUseCase) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Rota para listagem de todas as encomendas do usuário atual.',
+  })
   async handle(@CurrentUser() user: UserPayload) {
     const userId = user.sub;
 

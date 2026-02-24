@@ -10,25 +10,23 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe';
 import { z } from 'zod';
 import { EditRecipientUseCase } from '@/domain/use-cases/recipients/edit-recipient';
 import { Roles } from '@/infra/auth/roles';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { bodyValidationPipe, EditRecipientDTO } from './dto/edit-recipient.dto';
 
-const editRecipientBodySchema = z.object({
-  newRecipientCpf: z.string(),
-  newRecipientName: z.string(),
-});
-
-const bodyValidationPipe = new ZodValidationPipe(editRecipientBodySchema);
-
-type EditRecipientBodySchema = z.infer<typeof editRecipientBodySchema>;
-
+@ApiTags('Recipients')
+@ApiBearerAuth()
 @Controller('/recipients/:recipientId/edit')
 export class EditRecipientController {
   constructor(private editRecipient: EditRecipientUseCase) {}
 
   @Put()
+  @ApiOperation({
+    summary: 'Rota para edição de destinatários existentes.',
+  })
   @HttpCode(204)
   @Roles('ADMIN')
   async handle(
-    @Body(bodyValidationPipe) body: EditRecipientBodySchema,
+    @Body(bodyValidationPipe) body: EditRecipientDTO,
     @Param('recipientId') recipientId: string,
   ) {
     const { newRecipientCpf, newRecipientName } = body;

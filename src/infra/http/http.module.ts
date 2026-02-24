@@ -52,6 +52,22 @@ import { EditRecipientUseCase } from '@/domain/use-cases/recipients/edit-recipie
 import { DeleteRecipientController } from './controllers/recipients/delete-recipient.controller';
 import { DeleteRecipientUseCase } from '@/domain/use-cases/recipients/delete-recipient';
 import { AsignDeliveryToCarrierUseCase } from '@/domain/use-cases/orders/asign-delivery-to-carrier';
+import { FetchRecipientAddresssController } from './controllers/addresses/list-recipient-addresses.controller';
+import { FetchRecipientAddressesUseCase } from '@/domain/use-cases/addresses/fetch-recipient-addresses';
+import { EditAddressController } from './controllers/addresses/edit-address.controller';
+import { EditAddressUseCase } from '@/domain/use-cases/addresses/edit-addresses';
+import { DeleteAddressController } from './controllers/addresses/delete-address.controller';
+import { DeleteAddressUseCase } from '@/domain/use-cases/addresses/delete-address';
+import { DeliverDeliveryController } from './controllers/orders/delivered-delivery.controller';
+import { fetchListOfAttachmentsController } from './controllers/attachments/fetch-list-attatchment-from-order.controller';
+import { fetchListOfAttachmentsUseCase } from '@/domain/use-cases/attachments/fetch-list-of-attachments';
+import { DeliverDeliveryUseCase } from '@/domain/use-cases/orders/deliver-delivery';
+import { DeleteAttachmentUseCase } from '@/domain/use-cases/attachments/delete-attachment';
+import { DeleteAttachmentController } from './controllers/attachments/delete-attachment.controller';
+import { fetchListOfNotificationsController } from './controllers/notifications/fetch-list-of-notifications.controller';
+import { fetchListOfNotificationsUseCase } from '@/domain/use-cases/notifications/fetch-list-of-notifications';
+import { DeleteNotificationController } from './controllers/notifications/delete-notification.controller';
+import { DeleteNotificationUseCase } from '@/domain/use-cases/notifications/delete-notifications';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -81,6 +97,14 @@ import { AsignDeliveryToCarrierUseCase } from '@/domain/use-cases/orders/asign-d
     fetchListOfRecipientsController,
     EditRecipientController,
     DeleteRecipientController,
+    FetchRecipientAddresssController,
+    EditAddressController,
+    DeleteAddressController,
+    DeliverDeliveryController,
+    fetchListOfAttachmentsController,
+    DeleteAttachmentController,
+    fetchListOfNotificationsController,
+    DeleteNotificationController,
   ],
   providers: [
     RegisterUserUseCase,
@@ -108,6 +132,14 @@ import { AsignDeliveryToCarrierUseCase } from '@/domain/use-cases/orders/asign-d
     fetchListOfRecipientsUseCase,
     EditRecipientUseCase,
     DeleteRecipientUseCase,
+    FetchRecipientAddressesUseCase,
+    EditAddressUseCase,
+    DeleteAddressUseCase,
+    DeliverDeliveryUseCase,
+    fetchListOfAttachmentsUseCase,
+    DeleteAttachmentUseCase,
+    fetchListOfNotificationsUseCase,
+    DeleteNotificationUseCase,
   ],
 })
 export class HttpModule {}

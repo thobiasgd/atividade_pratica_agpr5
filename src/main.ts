@@ -13,7 +13,8 @@ async function bootstrap() {
     .setTitle('FastFeet API')
     .setDescription('An API for a delivery company.')
     .setVersion('1.0')
-    .addTag('delivery')
+    .addBearerAuth()
+    //.addTag('delivery')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

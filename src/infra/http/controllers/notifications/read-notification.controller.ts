@@ -7,30 +7,24 @@ import {
   Patch,
 } from '@nestjs/common';
 import { ReadNotificationUseCase } from '@/domain/notification/application/use-cases/read-notification';
-import z from 'zod';
 import { Public } from '@/infra/auth/public';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-const createUserBodySchema = z.object({
-  userCpf: z.string(),
-});
-
-type CreateUserBodySchema = z.infer<typeof createUserBodySchema>;
+@ApiTags('Notifications')
 @Controller('/notifications/:notificationId/read')
 export class ReadNotificationController {
   constructor(private readNotification: ReadNotificationUseCase) {}
 
   @Patch()
+  @ApiOperation({
+    summary:
+      'Rota para confirmação de leitura das notificações dos destinatários',
+  })
   @Public()
   @HttpCode(204)
-  async handle(
-    @Body() body: CreateUserBodySchema,
-    @Param('notificationId') notificationId: string,
-  ) {
-    const { userCpf } = body;
-
+  async handle(@Param('notificationId') notificationId: string) {
     const result = await this.readNotification.execute({
       notificationId,
-      recipientCpf: userCpf,
     });
 
     if (result.isLeft()) {

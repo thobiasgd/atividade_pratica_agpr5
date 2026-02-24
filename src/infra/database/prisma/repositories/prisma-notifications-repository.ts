@@ -8,6 +8,15 @@ import { PrismaNotificationMapper } from '../mappers/prisma-notification-mapper'
 export class PrismaNotificationsRepository implements NotificationsRepository {
   constructor(private prisma: PrismaService) {}
 
+  async fetchListOfNotifications(page: number): Promise<Notification[]> {
+    const notifications = await this.prisma.notification.findMany({
+      take: 20,
+      skip: (page - 1) * 20,
+    });
+
+    return notifications.map(PrismaNotificationMapper.toDomain);
+  }
+
   async findById(id: string): Promise<Notification | null> {
     const notification = await this.prisma.notification.findUnique({
       where: {
@@ -38,6 +47,16 @@ export class PrismaNotificationsRepository implements NotificationsRepository {
         id: notification.id.toString(),
       },
       data,
+    });
+  }
+
+  async delete(notification: Notification): Promise<void> {
+    const data = PrismaNotificationMapper.toPrisma(notification);
+
+    await this.prisma.notification.deleteMany({
+      where: {
+        id: data.id,
+      },
     });
   }
 }

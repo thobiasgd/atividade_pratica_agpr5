@@ -7,27 +7,24 @@ import {
   Put,
 } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
-import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe';
-import { z } from 'zod';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { EditOrderUseCase } from '@/domain/use-cases/orders/edit-order';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { bodyValidationPipe, EditOrderDTO } from './dto/edit-order.dto';
 
-const editOrderBodySchema = z.object({
-  newOrderDescription: z.string(),
-});
-
-const bodyValidationPipe = new ZodValidationPipe(editOrderBodySchema);
-
-type EditOrderBodySchema = z.infer<typeof editOrderBodySchema>;
-
+@ApiTags('Orders')
 @Controller('/orders/:orderId/edit')
 export class EditOrderController {
   constructor(private editOrder: EditOrderUseCase) {}
 
   @Put()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Rota para edição de encomendas existentes.',
+  })
   @HttpCode(204)
   async handle(
-    @Body(bodyValidationPipe) body: EditOrderBodySchema,
+    @Body(bodyValidationPipe) body: EditOrderDTO,
     @CurrentUser() order: UserPayload,
     @Param('orderId') orderId: string,
   ) {

@@ -106,3 +106,10 @@ model Notification {
   @@map("notification")
 }
 
+model Checklist {
+  id String @id @default(uuid())
+  signature Boolean
+  notDamaged Boolean
+  
+}
+

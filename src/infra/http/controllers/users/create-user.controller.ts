@@ -7,29 +7,24 @@ import {
   HttpCode,
   Post,
 } from '@nestjs/common';
-import z from 'zod';
 import { UserAlreadyExistsError } from '@/core/errors/errors/user-already-exists';
 import { Roles } from '@/infra/auth/roles';
-import { Public } from '@/infra/auth/public';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { bodyValidationPipe, CreateUserDTO } from './dto/create-user.dto';
 
-const createUserBodySchema = z.object({
-  name: z.string(),
-  cpf: z.string(),
-  password: z.string(),
-  type: z.enum(['ADMIN', 'EMPLOYEE']),
-});
-
-type CreateUserBodySchema = z.infer<typeof createUserBodySchema>;
-
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('/users')
 export class CreateUserController {
   constructor(private registerUser: RegisterUserUseCase) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Rota para cruação de novos usuários.',
+  })
   @Roles('ADMIN')
-  //@Public()
   @HttpCode(201)
-  async handle(@Body() body: CreateUserBodySchema) {
+  async handle(@Body(bodyValidationPipe) body: CreateUserDTO) {
     const { name, cpf, password, type } = body;
 
     const result = await this.registerUser.execute({

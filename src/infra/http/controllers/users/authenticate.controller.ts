@@ -7,26 +7,29 @@ import {
   UnauthorizedException,
   UsePipes,
 } from '@nestjs/common';
-import z from 'zod';
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import { WrongCredentialsError } from '@/core/errors/errors/wrong-credentials-error';
 import { AuthenticateUserUseCase } from '@/domain/use-cases/users/authenticate-user';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  authenticateBodySchema,
+  authenticateBodyValidationPipe,
+  AuthenticateDTO,
+} from './dto/authenticate.dto';
 
-const authenticateBodySchema = z.object({
-  cpf: z.string(),
-  password: z.string(),
-});
-
-type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
-
+@ApiTags('Authentication')
+@ApiBearerAuth()
 @Controller('/sessions')
 @Public()
 export class AuthenticateController {
   constructor(private authenticateUser: AuthenticateUserUseCase) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Rota para autenticação do usuário para geração de JWT token.',
+  })
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(@Body(authenticateBodyValidationPipe) body: AuthenticateDTO) {
     const { cpf, password } = body;
 
     const result = await this.authenticateUser.execute({

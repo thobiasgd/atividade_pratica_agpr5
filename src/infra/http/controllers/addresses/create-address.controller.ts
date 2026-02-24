@@ -1,5 +1,3 @@
-import z from 'zod';
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe';
 import {
   BadRequestException,
   Body,
@@ -10,30 +8,26 @@ import {
 import { RegisterAddressUseCase } from '@/domain/use-cases/addresses/register-address';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { Roles } from '@/infra/auth/roles';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  bodyValidationPipe,
+  CreateAddressDTO,
+  recipientIdParamSchema,
+} from './dto/create-address.dto';
 
-const recipientAddressBodySchema = z.object({
-  country: z.string(),
-  state: z.string(),
-  city: z.string(),
-  neighborhood: z.string(),
-  street: z.string(),
-  number: z.coerce.number().int(),
-});
-
-const recipientIdParamSchema = z.uuid();
-
-const bodyValidationPipe = new ZodValidationPipe(recipientAddressBodySchema);
-
-type RecipientAddressBodySchema = z.infer<typeof recipientAddressBodySchema>;
-
+@ApiTags('Addresses')
+@ApiBearerAuth()
 @Controller('/recipients/:recipientId/addresses')
 export class AddressRecipientController {
   constructor(private recipientAddress: RegisterAddressUseCase) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Rota para criação de novos endereços.',
+  })
   @Roles('ADMIN')
   async handle(
-    @Body(bodyValidationPipe) body: RecipientAddressBodySchema,
+    @Body(bodyValidationPipe) body: CreateAddressDTO,
     @Param('recipientId') recipientId: string,
   ) {
     const { country, state, city, neighborhood, street, number } = body;
