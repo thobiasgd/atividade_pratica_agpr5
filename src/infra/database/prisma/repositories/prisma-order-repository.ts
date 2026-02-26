@@ -46,9 +46,7 @@ export class PrismaOrderRepository implements OrderRepository {
 
   async findById(id: string): Promise<Order | null> {
     const order = await this.prisma.order.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
 
     if (!order) {
@@ -59,13 +57,13 @@ export class PrismaOrderRepository implements OrderRepository {
   }
 
   async asignOrderToCarrier(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrisma(order);
-
     await this.prisma.order.update({
       where: {
         id: order.id.toString(),
       },
-      data,
+      data: {
+        carrierId: order.carrierId ? order.carrierId.toString() : null,
+      },
     });
   }
 
@@ -81,8 +79,6 @@ export class PrismaOrderRepository implements OrderRepository {
   }
 
   async create(order: Order): Promise<void> {
-    console.log('[OrderRepository] Salvando pedido:', order.id.toString());
-
     await this.prisma.order.create({
       data: {
         id: order.id.toString(),
@@ -91,32 +87,28 @@ export class PrismaOrderRepository implements OrderRepository {
         recipientId: order.recipientId.toString(),
         addressId: order.addressId.toString(),
         carrierId: order.carrierId ? order.carrierId.toString() : null,
+        checklistId: order.checklistId.toString(),
       },
     });
 
-    console.log('[OrderRepository] Disparando DomainEvents');
     DomainEvents.dispatchEventsForAggregate(order.id);
   }
 
   async save(order: Order): Promise<void> {
     const data = PrismaOrderMapper.toPrisma(order);
 
-    await Promise.all([
-      this.prisma.order.update({
-        where: {
-          id: order.id.toString(),
-        },
-        data,
-      }),
-    ]);
+    await this.prisma.order.update({
+      where: {
+        id: order.id.toString(),
+      },
+      data,
+    });
   }
 
   async delete(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrisma(order);
-
     await this.prisma.order.delete({
       where: {
-        id: data.id,
+        id: order.id.toString(),
       },
     });
   }

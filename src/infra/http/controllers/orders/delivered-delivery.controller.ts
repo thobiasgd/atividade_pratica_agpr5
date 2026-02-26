@@ -14,8 +14,16 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InvalidAttachmentTypeError } from '@/core/errors/errors/invalid-attachment-type-error';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DeliverDeliveryUseCase } from '@/domain/use-cases/orders/deliver-delivery';
+import { MissingRequiredChecklistItemsError } from '@/core/errors/errors/missing-required-checklist-items-error';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -27,6 +35,20 @@ export class DeliverDeliveryController {
   @ApiOperation({
     summary:
       'Rota entregar e realizar upload de anexo para marcar encomenda como "DELIVERED"',
+  })
+  @ApiParam({ name: 'orderId', type: 'string', format: 'uuid' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+      required: ['file'],
+    },
   })
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(204)
@@ -60,6 +82,7 @@ export class DeliverDeliveryController {
 
       switch (error.constructor) {
         case InvalidAttachmentTypeError:
+        case MissingRequiredChecklistItemsError:
           throw new BadRequestException(error.message);
         default:
           throw new BadRequestException(error.message);

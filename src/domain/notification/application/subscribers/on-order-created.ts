@@ -15,11 +15,6 @@ export class OnOrderCreated implements EventHandler {
   }
 
   setupSubscriptions(): void {
-    console.log(
-      '[OnOrderCreated] Registrando listener para',
-      OrderCreatedEvent.name,
-    );
-
     DomainEvents.register(
       this.sendNewOrderNotification.bind(this),
       OrderCreatedEvent.name,
@@ -27,17 +22,9 @@ export class OnOrderCreated implements EventHandler {
   }
 
   private async sendNewOrderNotification(event: OrderCreatedEvent) {
-    console.log('[OnOrderCreated] Recebi evento OrderCreatedEvent', {
-      orderId: event.order.id.toString(),
-      recipientId: event.order.recipientId.toString(),
-      description: event.order.description,
-    });
-
     const persistedOrder = await this.orderRepository.findById(
       event.order.id.toString(),
     );
-
-    //console.log('[OnOrderCreated] persistedOrder', persistedOrder);
 
     if (!persistedOrder) return;
 
@@ -46,10 +33,5 @@ export class OnOrderCreated implements EventHandler {
       title: `Encomenda: "${persistedOrder.description.substring(0, 40)}" - ${persistedOrder.status}`,
       description: persistedOrder.description,
     });
-
-    console.log(
-      '[OnOrderCreated] sendNotification result isLeft?',
-      result.isLeft(),
-    );
   }
 }

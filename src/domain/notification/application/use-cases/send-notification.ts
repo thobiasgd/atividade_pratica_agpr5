@@ -26,11 +26,6 @@ export class SendNotificationUseCase {
     title,
     description,
   }: SendNotificationUseCaseRequest) {
-    console.log('[SendNotification] Criando notificação:', {
-      recipientId,
-      title,
-    });
-
     const notification = Notification.create({
       recipientId: new UniqueEntityID(recipientId),
       title,
@@ -38,11 +33,6 @@ export class SendNotificationUseCase {
     });
 
     await this.notificationsRepository.create(notification);
-
-    console.log(
-      '[SendNotification] Notificação salva:',
-      notification.id.toString(),
-    );
 
     return right({ notification });
   }

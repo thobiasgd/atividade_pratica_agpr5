@@ -12,6 +12,8 @@ import { AttachmentsRepository } from '@/domain/repositories/attachments-reposit
 import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository';
 import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository';
 import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository';
+import { ChecklistRepository } from '@/domain/repositories/checklist-repository';
+import { PrismaChecklistRepository } from './prisma/repositories/prisma-checklist-respository';
 
 @Module({
   providers: [
@@ -40,6 +42,10 @@ import { PrismaNotificationsRepository } from './prisma/repositories/prisma-noti
       provide: NotificationsRepository,
       useClass: PrismaNotificationsRepository,
     },
+    {
+      provide: ChecklistRepository,
+      useClass: PrismaChecklistRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -49,6 +55,7 @@ import { PrismaNotificationsRepository } from './prisma/repositories/prisma-noti
     OrderRepository,
     AttachmentsRepository,
     NotificationsRepository,
+    ChecklistRepository,
   ],
 })
 export class DatabaseModule {}

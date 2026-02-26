@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import z from 'zod';
 import { Roles } from '@/infra/auth/roles';
-import { RegisterOrderUseCase } from '@/domain/use-cases/orders/register-order';
+import { RegisterOrderUseCase } from '@/domain/use-cases/orders/create-order';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
@@ -29,15 +29,22 @@ export class CreateOrderController {
   @Roles('ADMIN')
   @HttpCode(201)
   async handle(@Body(bodyValidationPipe) body: CreateOrderDTO) {
-    const { description, status, recipientId, addressId, carrierId } =
-      createOrderBodySchema.parse(body);
+    const {
+      description,
+      status,
+      recipientId,
+      addressId,
+      //carrierId,
+      checklistId,
+    } = createOrderBodySchema.parse(body);
 
     const result = await this.registerOrder.execute({
       description,
       status,
       recipientId: new UniqueEntityID(recipientId),
       addressId: new UniqueEntityID(addressId),
-      carrierId: carrierId ? new UniqueEntityID(carrierId) : null,
+      carrierId: /* carrierId ? new UniqueEntityID(carrierId) : */ null,
+      checklistId: new UniqueEntityID(checklistId),
     });
 
     if (result.isLeft()) {

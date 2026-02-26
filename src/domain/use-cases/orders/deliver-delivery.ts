@@ -1,12 +1,14 @@
 import { Either, left, right } from '@/core/either';
 import { InvalidAttachmentTypeError } from '@/core/errors/errors/invalid-attachment-type-error';
 import { MissingAttachmentError } from '@/core/errors/errors/missing-attachment-error';
+import { MissingRequiredChecklistItemsError } from '@/core/errors/errors/missing-required-checklist-items-error';
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error';
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error';
 import { DomainEvents } from '@/core/events/domain-events';
 import { Attachment, AttachmentProps } from '@/domain/entities/attachment';
 import { Order } from '@/domain/entities/order';
 import { AttachmentsRepository } from '@/domain/repositories/attachments-repository';
+import { ChecklistRepository } from '@/domain/repositories/checklist-repository';
 import { OrderRepository } from '@/domain/repositories/order-repository';
 import { Uploader } from '@/domain/storage/uploader';
 import { Injectable } from '@nestjs/common';
@@ -24,7 +26,8 @@ type DeliverDeliveryUseCaseResponse = Either<
   | ResourceNotFoundError
   | NotAllowedError
   | InvalidAttachmentTypeError
-  | MissingAttachmentError,
+  | MissingAttachmentError
+  | MissingRequiredChecklistItemsError,
   {
     order: Order;
     attachment: AttachmentProps;
@@ -37,6 +40,7 @@ export class DeliverDeliveryUseCase {
     private orderRepository: OrderRepository,
     private attachmentsRepository: AttachmentsRepository,
     private uploader: Uploader,
+    private checklistRepository: ChecklistRepository,
   ) {}
 
   async execute({
@@ -64,6 +68,34 @@ export class DeliverDeliveryUseCase {
 
     if (order.carrierId?.toString() !== userId) {
       return left(new NotAllowedError());
+    }
+
+    // ✅ itens obrigatórios do template dessa ordem
+    const requiredItems =
+      await this.checklistRepository.fetchRequiredChecklistItems(
+        order.id.toString(),
+      );
+
+    // ✅ checklist completo com os values atuais
+    const completeChecklist =
+      await this.checklistRepository.fetchCompleteChecklistOrder(
+        order.id.toString(),
+      );
+
+    // ✅ set com templateItemId que estão checados (value === true)
+    const checkedTemplateItemIds = new Set(
+      completeChecklist.items
+        .filter((item) => item.value === true)
+        .map((item) => item.templateItemId),
+    );
+
+    // ✅ obrigatórios faltando
+    const missingRequired = requiredItems
+      .filter((req) => !checkedTemplateItemIds.has(req.templateItemId))
+      .map((req) => req.atribute);
+
+    if (missingRequired.length > 0) {
+      return left(new MissingRequiredChecklistItemsError(missingRequired));
     }
 
     order.status = 'DELIVERED';

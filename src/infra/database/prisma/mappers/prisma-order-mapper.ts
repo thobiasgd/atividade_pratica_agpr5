@@ -29,6 +29,7 @@ export class PrismaOrderMapper {
         recipientId: new UniqueEntityID(raw.recipientId),
         addressId: new UniqueEntityID(raw.addressId),
         carrierId: raw.carrierId ? new UniqueEntityID(raw.carrierId) : null,
+        checklistId: new UniqueEntityID(raw.checklistId),
       },
       new UniqueEntityID(raw.id),
     );
@@ -55,6 +56,7 @@ export class PrismaOrderMapper {
       recipientId: order.recipientId.toString(),
       addressId: order.addressId.toString(),
       carrierId: order.carrierId ? order.carrierId.toString() : null,
+      checklistId: order.addressId.toString(),
     };
   }
 }

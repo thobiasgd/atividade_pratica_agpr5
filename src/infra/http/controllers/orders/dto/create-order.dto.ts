@@ -9,7 +9,8 @@ export const createOrderBodySchema = z.object({
     .default('WAITING'),
   recipientId: z.uuid(),
   addressId: z.uuid(),
-  carrierId: z.uuid().optional().nullable(),
+  //carrierId: z.uuid().optional().nullable(),
+  checklistId: z.string(),
 });
 
 export const bodyValidationPipe = new ZodValidationPipe(createOrderBodySchema);
@@ -41,9 +42,15 @@ export class CreateOrderDTO implements CreateOrderBodySchema {
   })
   addressId!: string;
 
-  @ApiProperty({
+  /* @ApiProperty({
     description: 'Id do entregador responsável da encomenda.',
     example: 'uuid.',
   })
-  carrierId!: string;
+  carrierId!: string; */
+
+  @ApiProperty({
+    description: 'Id do checklist a ser atribuído.',
+    example: 'uuid.',
+  })
+  checklistId!: string;
 }

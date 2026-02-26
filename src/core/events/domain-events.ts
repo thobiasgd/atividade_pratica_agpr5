@@ -42,18 +42,12 @@ export class DomainEvents {
     const aggregate = this.markedAggregates.find((a) => a.id.equals(id));
 
     if (!aggregate) {
-      console.log(
-        '[DomainEvents] Nenhum aggregate marcado para:',
-        id.toString(),
-      );
       return;
     }
 
     const events = aggregate.domainEvents;
-    console.log('[DomainEvents] Eventos encontrados:', events.length);
 
     events.forEach((event) => {
-      console.log('[DomainEvents] Disparando evento:', event.constructor.name);
       this.dispatch(event);
     });
 
@@ -74,8 +68,6 @@ export class DomainEvents {
 
   } */
   static register(callback: DomainEventCallback, eventName: string) {
-    console.log('[DomainEvents] Registrando handler para:', eventName);
-
     const handlers = this.handlersMap[eventName] ?? [];
     handlers.push(callback);
     this.handlersMap[eventName] = handlers;
@@ -93,18 +85,10 @@ export class DomainEvents {
     const eventName = event.constructor.name;
     const handlers = this.handlersMap[eventName] ?? [];
 
-    console.log('[DomainEvents] Handlers para', eventName, handlers.length);
-
     for (const handler of handlers) {
       try {
         handler(event);
-      } catch (err) {
-        console.error(
-          '[DomainEvents] Erro executando handler de',
-          eventName,
-          err,
-        );
-      }
+      } catch (err) {}
     }
   }
 }

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { OrderRepository } from '../../repositories/order-repository';
 import { OrderStatus } from 'generated/enums';
+import { ChecklistRepository } from '@/domain/repositories/checklist-repository';
 
 interface RegisterOrderUseCaseRequest {
   description: string;
@@ -11,6 +12,7 @@ interface RegisterOrderUseCaseRequest {
   recipientId: UniqueEntityID;
   addressId: UniqueEntityID;
   carrierId?: UniqueEntityID | null;
+  checklistId: UniqueEntityID;
 }
 
 type RegisterOrderUseCaseResponse = Either<
@@ -22,7 +24,10 @@ type RegisterOrderUseCaseResponse = Either<
 
 @Injectable()
 export class RegisterOrderUseCase {
-  constructor(private orderRepository: OrderRepository) {}
+  constructor(
+    private orderRepository: OrderRepository,
+    private checklistRepository: ChecklistRepository,
+  ) {}
 
   async execute({
     description,
@@ -30,6 +35,7 @@ export class RegisterOrderUseCase {
     recipientId,
     addressId,
     carrierId,
+    checklistId,
   }: RegisterOrderUseCaseRequest): Promise<RegisterOrderUseCaseResponse> {
     const order = Order.create({
       description,
@@ -37,9 +43,15 @@ export class RegisterOrderUseCase {
       recipientId,
       addressId,
       carrierId: carrierId ?? null,
+      checklistId,
     });
 
     await this.orderRepository.create(order);
+    await this.checklistRepository.createRelationChecklistOrder(
+      order.id.toString(),
+      order.checklistId.toString(),
+    );
+    await this.checklistRepository.onOrderCreation(order.id.toString());
 
     return right({
       order,

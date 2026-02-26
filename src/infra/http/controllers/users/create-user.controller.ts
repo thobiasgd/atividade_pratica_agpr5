@@ -20,7 +20,7 @@ export class CreateUserController {
 
   @Post()
   @ApiOperation({
-    summary: 'Rota para cruação de novos usuários.',
+    summary: 'Rota para criação de novos usuários.',
   })
   @Roles('ADMIN')
   @HttpCode(201)

@@ -13,6 +13,7 @@ export interface OrderProps {
   recipientId: UniqueEntityID;
   addressId: UniqueEntityID;
   carrierId: UniqueEntityID | null;
+  checklistId: UniqueEntityID;
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -42,6 +43,14 @@ export class Order extends AggregateRoot<OrderProps> {
 
   set carrierId(carrierId: UniqueEntityID | null) {
     this.props.carrierId = carrierId;
+  }
+
+  get checklistId(): UniqueEntityID {
+    return this.props.checklistId;
+  }
+
+  set checklistId(checklistId: UniqueEntityID) {
+    this.props.checklistId = checklistId;
   }
 
   set status(status: OrderStatus) {

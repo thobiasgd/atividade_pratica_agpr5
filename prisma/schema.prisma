@@ -25,6 +25,12 @@ enum OrderStatus {
   RETURNED
 }
 
+enum ChecklistTemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 model User {
   id       String @id @default(uuid())
   name     String 
@@ -35,6 +41,7 @@ model User {
   orders   Order[]
 
   @@map("users")
+  //checkListInstanceItems ChecklistInstanceItem[]
 }
 
 model Recipient {
@@ -71,18 +78,21 @@ model Order {
   carrierId    String? @map("carrier_id")
   recipientId  String @map("recipent_id")
   status       OrderStatus @default(WAITING)
+  checklistId  String
 
   attachments  Attachment[]
 
+  checklist    ChecklistTemplate @relation(fields: [checklistId], references: [id])
   carrier      User? @relation(fields: carrierId, references: [id])
   recipient    Recipient @relation(fields: recipientId, references: [id])
   address      Address @relation(fields: addressId, references: [id])
 
   @@map("orders")
+  checkListInstances ChecklistInstance[]
 }
 
 model Attachment {
-  id         String  @id @default(uuid())
+  id         String @id @default(uuid())
   title      String
   url        String
   orderId    String? @map("order_id")
@@ -93,7 +103,7 @@ model Attachment {
 }
 
 model Notification {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   recipientId String @map("recipient_id")
   title       String
   description String
@@ -106,10 +116,60 @@ model Notification {
   @@map("notification")
 }
 
-model Checklist {
-  id String @id @default(uuid())
-  signature Boolean
-  notDamaged Boolean
-  
+model ChecklistTemplate {
+  id            String @id @default(uuid())
+  checklistName String @map("checklist_name")
+  version       Int
+  status        ChecklistTemplateStatus @default(DRAFT)
+  createdAt     DateTime @map("created_at")
+
+  @@map("checklist_template")
+  checklistTemplateItens ChecklistTemplateItem[]
+  checklistInstances ChecklistInstance[]
+  orders Order[]
 }
 
+model ChecklistTemplateItem {
+  id            String @id @default(uuid())
+  templateId    String
+  template      ChecklistTemplate @relation(fields: [templateId], references: [id])
+
+  atribute      String
+  required      Boolean @default(false)
+  sortOrder     Int @map("sort_order")
+
+  checklistInstanceItems ChecklistInstanceItem[]
+
+  @@map("checklist_template_item")
+}
+
+model ChecklistInstance {
+  id         String @id @default(uuid())
+  orderId    String @unique
+  order      Order @relation(fields: [orderId], references: [id])
+
+  templateId String
+  template   ChecklistTemplate @relation(fields: [templateId], references: [id])
+
+  createdAt  DateTime @default(now())
+
+  checklistInstanceItems ChecklistInstanceItem[]
+
+  @@map("checklist_instance")
+}
+
+model ChecklistInstanceItem {
+  id         String @id @default(uuid())
+
+  instanceId String
+  instance ChecklistInstance @relation(fields: [instanceId], references: [id])
+
+  templateItemId String
+  templateItem ChecklistTemplateItem @relation(fields: [templateItemId], references: [id])
+
+  value Boolean
+
+  checkedAt DateTime? @map("checked_at")
+
+  @@map("checklist_instance_item")
+}

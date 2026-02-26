@@ -10,7 +10,7 @@ import { RegisterRecipientUseCase } from '@/domain/use-cases/recipients/register
 import { AddressRecipientController } from './controllers/addresses/create-address.controller';
 import { RegisterAddressUseCase } from '@/domain/use-cases/addresses/register-address';
 import { CreateOrderController } from './controllers/orders/create-order.controller';
-import { RegisterOrderUseCase } from '@/domain/use-cases/orders/register-order';
+import { RegisterOrderUseCase } from '@/domain/use-cases/orders/create-order';
 import { AsignDeliveryToCarrierController } from './controllers/orders/asign-delivery-to-carrier.controller';
 import { PostDeliveryController } from './controllers/orders/post-delivery.controller';
 import { PostDeliveryUseCase } from '@/domain/use-cases/orders/post-delivery';
@@ -68,6 +68,14 @@ import { fetchListOfNotificationsController } from './controllers/notifications/
 import { fetchListOfNotificationsUseCase } from '@/domain/use-cases/notifications/fetch-list-of-notifications';
 import { DeleteNotificationController } from './controllers/notifications/delete-notification.controller';
 import { DeleteNotificationUseCase } from '@/domain/use-cases/notifications/delete-notifications';
+import { CreateChecklistTemplateUseCase } from '@/domain/use-cases/checklists/create-checklist';
+import { CreateChecklistTemplateController } from './controllers/checklists/create-checklist-template.controller';
+import { CreateItemsChecklistTemplateController } from './controllers/checklists/create-items-checklist-template.controller';
+import { CreateChecklistItensUseCase } from '@/domain/use-cases/checklists/insert-itens-checklist';
+import { CheckAndUncheckChecklistItemController } from './controllers/checklists/check-and-uncheck-checklist-item.controller';
+import { CheckAndUncheckChecklistItemUseCase } from '@/domain/use-cases/checklists/check-and-uncheck-checklist-item';
+import { FetchCompleteChecklistOrderUseCase } from '@/domain/use-cases/checklists/fetch-checklist-order';
+import { FetchSingleChecklistOrderController } from './controllers/checklists/fetch-checklist-order.controller';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -105,6 +113,10 @@ import { DeleteNotificationUseCase } from '@/domain/use-cases/notifications/dele
     DeleteAttachmentController,
     fetchListOfNotificationsController,
     DeleteNotificationController,
+    CreateChecklistTemplateController,
+    CreateItemsChecklistTemplateController,
+    CheckAndUncheckChecklistItemController,
+    FetchSingleChecklistOrderController,
   ],
   providers: [
     RegisterUserUseCase,
@@ -140,6 +152,10 @@ import { DeleteNotificationUseCase } from '@/domain/use-cases/notifications/dele
     DeleteAttachmentUseCase,
     fetchListOfNotificationsUseCase,
     DeleteNotificationUseCase,
+    CreateChecklistTemplateUseCase,
+    CreateChecklistItensUseCase,
+    CheckAndUncheckChecklistItemUseCase,
+    FetchCompleteChecklistOrderUseCase,
   ],
 })
 export class HttpModule {}
