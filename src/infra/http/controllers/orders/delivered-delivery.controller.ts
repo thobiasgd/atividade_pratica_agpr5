@@ -44,6 +44,7 @@ export class DeliverDeliveryController {
       properties: {
         file: {
           type: 'string',
+          description: 'Foto a ser enviada para comprovação de entrega.',
           format: 'binary',
         },
       },
