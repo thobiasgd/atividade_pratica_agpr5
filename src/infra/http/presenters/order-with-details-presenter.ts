@@ -3,6 +3,7 @@ import { OrderWithDetails } from '@/domain/entities/orderWithDetails';
 export class OrderWithDetailsPresenter {
   static toHTTP(order: OrderWithDetails) {
     return {
+      id: order.id.toString(),
       description: order.description,
       status: order.status,
 

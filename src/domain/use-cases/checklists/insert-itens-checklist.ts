@@ -1,4 +1,4 @@
-import { Either, right } from '@/core/either';
+import { Either, left, right } from '@/core/either';
 
 import { Injectable } from '@nestjs/common';
 import { ChecklistRepository } from '@/domain/repositories/checklist-repository';
@@ -8,13 +8,6 @@ interface CreateChecklistItensUseCaseRequest {
   checklistItensArray: ChecklistTemplateItem[];
 }
 
-/* type CreateChecklistItensUseCaseResponse = Either<
-  null,
-  {
-    checklistitens: ChecklistTemplateItem[];
-  }
->;
- */
 @Injectable()
 export class CreateChecklistItensUseCase {
   constructor(private checklistitensRepository: ChecklistRepository) {}
@@ -22,12 +15,19 @@ export class CreateChecklistItensUseCase {
   async execute({
     checklistItensArray,
   }: CreateChecklistItensUseCaseRequest): Promise<void> {
-    const checklistitens =
-      await this.checklistitensRepository.insertItensInChecklistTemplate(
-        checklistItensArray,
-      );
+    //const checklistitens =
+    await this.checklistitensRepository.insertItensInChecklistTemplate(
+      checklistItensArray,
+    );
 
-    /* return right({
+    /* if (!checklistitens){
+
+      return left({
+        null
+      })
+    }
+
+    return right({
       checklistitens,
     }); */
   }

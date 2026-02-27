@@ -6,6 +6,7 @@ import { AttachmentsRepository } from '../../repositories/attachments-repository
 import { Attachment } from '../../entities/attachment';
 
 interface UploadAndCreateAttachmentRequest {
+  orderId: string;
   fileName: string;
   fileType: string;
   body: Buffer;
@@ -24,6 +25,7 @@ export class UploadAndCreateAttachmentUseCase {
   ) {}
 
   async execute({
+    orderId,
     fileName,
     fileType,
     body,
@@ -37,6 +39,7 @@ export class UploadAndCreateAttachmentUseCase {
     const attachment = Attachment.create({
       title: fileName,
       url,
+      orderId,
     });
 
     await this.attachmentsRepository.create(attachment); // <- erro aqui

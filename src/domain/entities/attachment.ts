@@ -4,6 +4,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 export interface AttachmentProps {
   title: string;
   url: string;
+  orderId: string;
 }
 
 export class Attachment extends Entity<AttachmentProps> {
@@ -13,6 +14,10 @@ export class Attachment extends Entity<AttachmentProps> {
 
   get url() {
     return this.props.url;
+  }
+
+  get orderId() {
+    return this.props.orderId;
   }
 
   static create(props: AttachmentProps, id?: UniqueEntityID) {

@@ -6,6 +6,7 @@ export type CompleteChecklistStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 export interface CompleteChecklistProps {
   templateId: string;
   checklistName: string;
+  version: number;
   items: {
     templateItemId: string;
     atribute: string;
@@ -20,6 +21,10 @@ export class CompleteChecklist extends Entity<CompleteChecklistProps> {
 
   get checklistName() {
     return this.props.checklistName;
+  }
+
+  get version() {
+    return this.props.version;
   }
 
   get items() {

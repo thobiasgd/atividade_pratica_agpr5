@@ -9,6 +9,7 @@ export type OrderWithDetailsStatus =
   | 'RETURNED';
 
 export interface OrderWithDetailsProps {
+  orderId: string;
   description: string;
   status: OrderWithDetailsStatus;
   recipientName: string;
@@ -17,6 +18,10 @@ export interface OrderWithDetailsProps {
 }
 
 export class OrderWithDetails extends AggregateRoot<OrderWithDetailsProps> {
+  get orderId() {
+    return this.props.orderId;
+  }
+
   get description() {
     return this.props.description;
   }

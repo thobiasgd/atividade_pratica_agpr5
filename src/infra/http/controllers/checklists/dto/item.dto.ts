@@ -19,3 +19,11 @@ export class ChecklistItemDTO {
   })
   sortOrder!: number;
 }
+
+export class DeleteChecklistItemDTO {
+  @ApiProperty({
+    description: 'Id do ChecklistTemplateItem a ser removido',
+    example: 'uuid-do-item',
+  })
+  id!: string;
+}

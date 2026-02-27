@@ -1,13 +1,12 @@
-import { InvalidAttachmentTypeError } from '@/core/errors/errors/invalid-attachment-type-error';
 import { UploadAndCreateAttachmentUseCase } from '@/domain/use-cases/attachments/upload-and-create-attachment';
 import {
-  BadRequestException,
   Controller,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -26,9 +25,10 @@ export class UploadAttachmentController {
     summary:
       'Rota para upload de anexos para confirmação de entrega das encomendas',
   })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('files'))
   async handle(
-    @UploadedFile(
+    @Param('orderId') orderId: string,
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
@@ -40,29 +40,39 @@ export class UploadAttachmentController {
         ],
       }),
     )
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
   ) {
-    const result = await this.uploadAndCreateAttachment.execute({
+    const result = await Promise.all(
+      files.map((file) => {
+        this.uploadAndCreateAttachment.execute({
+          orderId: orderId,
+          fileName: file.originalname,
+          fileType: file.mimetype,
+          body: file.buffer,
+        });
+      }),
+    );
+    /* const result = await this.uploadAndCreateAttachment.execute({
       fileName: file.originalname,
       fileType: file.mimetype,
       body: file.buffer,
-    });
+    }); */
 
-    if (result.isLeft()) {
-      const error = result.value;
+    /* if (result.isLeft()) {
+      const error = result.values;
 
       switch (error.constructor) {
         case InvalidAttachmentTypeError:
-          throw new BadRequestException(error.message);
+          throw new BadRequestException(error.);
         default:
           throw new BadRequestException(error.message);
       }
     }
 
-    const { attachment } = result.value;
+    const { attachment } = result.values;
 
     return {
       attachmentId: attachment.id.toString(),
-    };
+    }; */
   }
 }

@@ -6,7 +6,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "cpf": "777.777.777.77",
+  "cpf": "123.456.789.10",
   "password": "111111"
 }
 
@@ -18,10 +18,10 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "David Leonardeli",
-  "cpf": "777.777.777.77.11111",
+  "name": "Thobias Gonçalves Dordete",
+  "cpf": "123.456.789.10",
   "password": "111111",
-  "type": "EMPLOYEE"
+  "type": "ADMIN"
 }
 
 ###

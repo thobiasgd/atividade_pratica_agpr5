@@ -76,12 +76,18 @@ import { CheckAndUncheckChecklistItemController } from './controllers/checklists
 import { CheckAndUncheckChecklistItemUseCase } from '@/domain/use-cases/checklists/check-and-uncheck-checklist-item';
 import { FetchCompleteChecklistOrderUseCase } from '@/domain/use-cases/checklists/fetch-checklist-order';
 import { FetchSingleChecklistOrderController } from './controllers/checklists/fetch-checklist-order.controller';
+import { DeleteItemsChecklistTemplateController } from './controllers/checklists/delete-items-checklist-template.controller';
+import { DeleteChecklistItensUseCase } from '@/domain/use-cases/checklists/delete-itens-checklist';
+import { FetchAllCompleteChecklistOrderUseCase } from '@/domain/use-cases/checklists/fetch-all-complete-checklists';
+import { FetchAllChecklistOrderController } from './controllers/checklists/fetch-all-complete-checklists.controller';
+import { EditChecklistNameController } from './controllers/checklists/edit-checklist-name.controller';
+import { EditChecklistNameUseCase } from '@/domain/use-cases/checklists/edit-checklist-name';
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
-    CreateUserController,
     AuthenticateController,
+    CreateUserController,
     CreateRecipientController,
     AddressRecipientController,
     CreateOrderController,
@@ -117,10 +123,13 @@ import { FetchSingleChecklistOrderController } from './controllers/checklists/fe
     CreateItemsChecklistTemplateController,
     CheckAndUncheckChecklistItemController,
     FetchSingleChecklistOrderController,
+    DeleteItemsChecklistTemplateController,
+    FetchAllChecklistOrderController,
+    EditChecklistNameController,
   ],
   providers: [
-    RegisterUserUseCase,
     AuthenticateUserUseCase,
+    RegisterUserUseCase,
     RegisterRecipientUseCase,
     RegisterAddressUseCase,
     RegisterOrderUseCase,
@@ -156,6 +165,9 @@ import { FetchSingleChecklistOrderController } from './controllers/checklists/fe
     CreateChecklistItensUseCase,
     CheckAndUncheckChecklistItemUseCase,
     FetchCompleteChecklistOrderUseCase,
+    DeleteChecklistItensUseCase,
+    FetchAllCompleteChecklistOrderUseCase,
+    EditChecklistNameUseCase,
   ],
 })
 export class HttpModule {}

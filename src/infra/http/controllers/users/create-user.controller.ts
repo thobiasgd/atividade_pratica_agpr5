@@ -23,6 +23,7 @@ export class CreateUserController {
     summary: 'Rota para criação de novos usuários.',
   })
   @Roles('ADMIN')
+  //@Public()
   @HttpCode(201)
   async handle(@Body(bodyValidationPipe) body: CreateUserDTO) {
     const { name, cpf, password, type } = body;

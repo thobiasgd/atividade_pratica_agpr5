@@ -54,7 +54,7 @@ export class DeliverDeliveryUseCase {
       return left(new MissingAttachmentError());
     }
 
-    if (!/^(image\/(jpeg|png))$|^application\/pdf$/.test(fileType)) {
+    if (!/^(image\/(jpeg|png|jpg))$|^application\/pdf$/.test(fileType)) {
       return left(new InvalidAttachmentTypeError(fileType));
     }
 
@@ -70,26 +70,22 @@ export class DeliverDeliveryUseCase {
       return left(new NotAllowedError());
     }
 
-    // ✅ itens obrigatórios do template dessa ordem
     const requiredItems =
       await this.checklistRepository.fetchRequiredChecklistItems(
         order.id.toString(),
       );
 
-    // ✅ checklist completo com os values atuais
     const completeChecklist =
       await this.checklistRepository.fetchCompleteChecklistOrder(
         order.id.toString(),
       );
 
-    // ✅ set com templateItemId que estão checados (value === true)
     const checkedTemplateItemIds = new Set(
       completeChecklist.items
         .filter((item) => item.value === true)
         .map((item) => item.templateItemId),
     );
 
-    // ✅ obrigatórios faltando
     const missingRequired = requiredItems
       .filter((req) => !checkedTemplateItemIds.has(req.templateItemId))
       .map((req) => req.atribute);
@@ -105,6 +101,7 @@ export class DeliverDeliveryUseCase {
     const attachment = Attachment.create({
       title: fileName,
       url,
+      orderId: order.id.toString(),
     });
 
     await this.attachmentsRepository.create(attachment);

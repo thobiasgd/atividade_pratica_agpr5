@@ -38,6 +38,7 @@ export class PrismaOrderMapper {
   static toDomainWithDetails(raw: PrismaOrderWithDetails): OrderWithDetails {
     return OrderWithDetails.create(
       {
+        orderId: raw.id,
         description: raw.description,
         status: raw.status,
         recipientName: raw.recipient.name,

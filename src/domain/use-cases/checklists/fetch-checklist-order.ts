@@ -1,8 +1,5 @@
 import { Either, left, right } from '@/core/either';
-import { User } from '@/domain/entities/user';
-import { UsersRepository } from '@/domain/repositories/user-repository';
 import { Injectable } from '@nestjs/common';
-import { UserNotFoundError } from '../../../core/errors/errors/user-not-found-error';
 import { CompleteChecklist } from '@/domain/entities/complete-checklist';
 import { ChecklistRepository } from '@/domain/repositories/checklist-repository';
 

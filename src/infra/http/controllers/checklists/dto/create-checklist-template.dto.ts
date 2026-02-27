@@ -25,7 +25,7 @@ export class CreateChecklistTemplateDTO implements CreateChecklistTemplateBodySc
 
   @ApiProperty({
     description: 'Versão do checklist.',
-    example: 1,
+    example: 0,
   })
   version!: number;
 

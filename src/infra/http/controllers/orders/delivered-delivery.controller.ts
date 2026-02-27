@@ -1,19 +1,13 @@
 import {
-  BadRequestException,
   Controller,
-  FileTypeValidator,
-  HttpCode,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Patch,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { CurrentUser } from '@/infra/auth/current-user-decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { InvalidAttachmentTypeError } from '@/core/errors/errors/invalid-attachment-type-error';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -23,7 +17,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DeliverDeliveryUseCase } from '@/domain/use-cases/orders/deliver-delivery';
-import { MissingRequiredChecklistItemsError } from '@/core/errors/errors/missing-required-checklist-items-error';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -42,52 +35,50 @@ export class DeliverDeliveryController {
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          description: 'Foto a ser enviada para comprovação de entrega.',
-          format: 'binary',
+        files: {
+          type: 'array',
+          items: {
+            description: 'Foto a ser enviada para comprovação de entrega.',
+            type: 'string',
+            format: 'binary',
+          },
         },
       },
-      required: ['file'],
+      required: ['files'],
     },
   })
-  @UseInterceptors(FileInterceptor('file'))
-  @HttpCode(204)
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      limits: {
+        fileSize: 1024 * 1024 * 2,
+      },
+      fileFilter: (req, file, callback) => {
+        const allowed = ['image/jpeg', 'image/png', 'application/pdf'];
+
+        if (!allowed.includes(file.mimetype)) {
+          return callback(new Error('Invalid file type'), false);
+        }
+
+        callback(null, true);
+      },
+    }),
+  )
   async handle(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({
-            maxSize: 1024 * 1024 * 2, // 2mb
-          }),
-          new FileTypeValidator({
-            fileType: '.(png|jpg|jpeg|pdf)',
-          }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
+    @UploadedFiles()
+    files: Express.Multer.File[],
     @Param('orderId') orderId: string,
     @CurrentUser() user: UserPayload,
   ) {
-    const result = await this.deliverDelivery.execute({
-      orderId,
-      userId: user.sub,
-      fileName: file.originalname,
-      fileType: file.mimetype,
-      body: file.buffer,
-    });
-
-    if (result.isLeft()) {
-      const error = result.value;
-
-      switch (error.constructor) {
-        case InvalidAttachmentTypeError:
-        case MissingRequiredChecklistItemsError:
-          throw new BadRequestException(error.message);
-        default:
-          throw new BadRequestException(error.message);
-      }
-    }
+    const results = await Promise.all(
+      files.map((file) =>
+        this.deliverDelivery.execute({
+          orderId,
+          userId: user.sub,
+          fileName: file.originalname,
+          fileType: file.mimetype,
+          body: file.buffer,
+        }),
+      ),
+    );
   }
 }
